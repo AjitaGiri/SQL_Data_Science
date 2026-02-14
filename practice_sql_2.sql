@@ -56,5 +56,6 @@ select * from film f
 where f.film_id  in (select film_id from film where film_id %2 !=0);
 
 
+-- CTE common table expressions
 
 
