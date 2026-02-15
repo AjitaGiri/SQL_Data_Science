@@ -86,3 +86,20 @@ select *,dense_rank() over (order by total_amount desc) as rn from w1) temp wher
 select * from customer c order by c.first_name;
 
 select * from customer c order by c.first_name desc;
+
+-- view in database
+create view V_Customer_Payment as
+select 
+c.customer_id,
+c.first_name,
+c.last_name,
+c.email,
+sum(p.amount) as total_amount
+from payment p 
+inner join customer c on p.customer_id =c.customer_id
+group by c.customer_id,
+c.first_name,
+c.last_name,
+c.email;
+
+select * from V_Customer_Payment;
