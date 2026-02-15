@@ -56,6 +56,33 @@ select * from film f
 where f.film_id  in (select film_id from film where film_id %2 !=0);
 
 
--- CTE common table expressions
+-- CTE (Common Table Expressions)
+
+with w1 as 
+(select c.customer_id, sum(p.amount)  as total_amount from payment p inner join customer c on c.customer_id =p.customer_id group by c.customer_id),
+w2 as 
+(select c.customer_id, min(p.amount) as min_amount from payment p inner join customer c on p.customer_id =c.customer_id group by c.customer_id )
+select * from w1 inner join w2 on w1.customer_id =w2.customer_id ;
 
 
+
+-- Window Functions
+select *, sum(p.amount) over (partition by p.customer_id order by p.payment_date) from payment p;
+
+-- rank and dense rank [imp]
+-- find the customer who have paid second highest amount
+
+select * from(
+with w1 as 
+( select p.customer_id, sum(p.amount) as total_amount from payment p group by p.customer_id)
+select *,rank() over (order by total_amount desc) as rn from w1) temp where rn=2;
+
+select * from(
+with w1 as 
+( select p.customer_id, sum(p.amount) as total_amount from payment p group by p.customer_id)
+select *,dense_rank() over (order by total_amount desc) as rn from w1) temp where rn=4;
+
+-- order by
+select * from customer c order by c.first_name;
+
+select * from customer c order by c.first_name desc;
