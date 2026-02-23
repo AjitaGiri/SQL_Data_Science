@@ -303,6 +303,125 @@ c.last_name
 order by c.last_name;
 
 
+-- q39
+select
+c.customer_id ,
+c.first_name ,
+c.last_name,
+count(r.rental_date ) as rentals
+from customer c
+inner join rental r 
+on c.customer_id =r.customer_id 
+group by c.customer_id ,
+c.first_name ,
+c.last_name 
+having count(r.rental_id )>5;
+
+-- q40
+select 
+f.film_id,
+f.title
+from  film f 
+left join inventory i 
+on f.film_id =i.film_id 
+left join rental r 
+on i.inventory_id =r.inventory_id 
+where r.rental_id is null;
+
+-- q41
+
+select
+c.customer_id ,
+c.first_name ,
+c.last_name 
+from customer c 
+left join payment p 
+on c.customer_id =p.customer_id 
+where p.payment_id is null;
+
+-- q42
+
+select
+a.actor_id ,
+a.first_name ,
+a.last_name 
+from film f
+inner join film_actor fa 
+on f.film_id =fa.film_id 
+inner join actor a 
+on fa.actor_id =a.actor_id 
+where f.title ='ACADEMY DINOSAUR';
+
+-- q43
+
+with rental_count_per_customer as(
+select
+c.customer_id ,
+c.first_name ,
+c.last_name,
+count(r.rental_id) as num_rentals
+from customer c 
+inner join rental r 
+on c.customer_id =r.customer_id 
+group by c.customer_id,c.first_name ,c.last_name 
+) 
+select 
+*
+from rental_count_per_customer 
+where num_rentals > (select avg(num_rentals) from rental_count_per_customer)
+
+-- q44
+select
+f.film_id ,
+f.title,
+f.rental_rate 
+from film f
+where f.rental_rate = ( select max(f2.rental_rate ) from film f2 );
+
+-- q45
+
+select
+fc.category_id,
+count(fc.film_id ) as no_of_film
+from film_category fc 
+group by fc.category_id 
+order by no_of_film desc 
+limit 1;
+
+-- q46
+--  using join
+select
+a.actor_id ,
+a.first_name ,
+a.last_name ,
+f.title 
+from film f 
+inner join film_actor fa 
+on f.film_id =fa.film_id 
+inner join actor a 
+on fa.actor_id =a.actor_id 
+where f.title ='Alone Trip';
+
+-- using subquery
+select 
+a.actor_id ,
+a.first_name ,
+a.last_name 
+from actor a
+where a.actor_id in ( 
+select fa.actor_id
+from film_actor fa 
+where fa.film_id = (
+select f.film_id
+from film f 
+where f.title='Alone Trip'
+)
+);
+
+
+
+
+
 
 
 
