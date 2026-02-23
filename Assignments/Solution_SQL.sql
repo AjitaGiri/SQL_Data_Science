@@ -170,6 +170,145 @@ from film f
 group by f.rating;
 
 
+-- q28
+select 
+s.staff_id ,
+s.first_name,
+s.last_name,
+a.address 
+from staff s 
+inner join address a 
+on s.address_id = a.address_id;
+
+-- q29
+select
+s.staff_id ,
+s.first_name ,
+s.last_name ,
+sum(p.amount ) as total_amount
+from staff s 
+inner join payment p 
+on s.staff_id =p.staff_id 
+where p.payment_date >= '2005-08-01' and p.payment_date < '2005-09-01'
+group by 
+s.staff_id ,
+s.first_name ,
+s.last_name ;
+
+-- q30
+select 
+f.film_id,
+f.title,
+count(fa.actor_id ) as no_of_actors
+from film f 
+inner join film_actor fa 
+on f.film_id =fa.film_id 
+group by f.film_id ,f.title;
+
+-- q31
+select
+s2.store_id ,
+count(s2.staff_id) as no_of_active_staff
+from staff s2 
+where s2.active =1
+group by s2.store_id 
+order by no_of_active_staff desc
+limit 1;
+
+-- q32
+select 
+c.customer_id ,
+c.first_name ,
+c.last_name ,
+a.address,
+a.postal_code ,
+c2.city ,
+c3.country 
+from customer c 
+inner join address a 
+on c.address_id =a.address_id 
+inner join city c2 
+on a.city_id =c2.city_id 
+inner join country c3 
+on c2.country_id =c3.country_id ;
+
+-- q33
+select 
+c3.country ,
+count(c.customer_id) as no_of_customer
+from customer c 
+inner join address a 
+on c.address_id =a.address_id 
+inner join city c2 
+on a.city_id =c2.city_id 
+inner join country c3 
+on c2.country_id =c3.country_id 
+group by c3.country;
+
+-- q34
+select 
+c2.city ,
+count(c.customer_id) as no_of_customer
+from customer c 
+inner join address a 
+on c.address_id =a.address_id 
+inner join city c2 
+on a.city_id =c2.city_id 
+group by c2.city ;
+
+-- q35
+select
+c.customer_id ,
+c.first_name ,
+c.last_name,
+f.title 
+from customer c 
+inner join rental r 
+on c.customer_id = r.customer_id 
+inner join inventory i 
+on r.inventory_id =i.inventory_id 
+inner join film f 
+on i.film_id =f.film_id;
+
+-- q36
+select
+c.customer_id ,
+c.first_name ,
+c.last_name
+from customer c 
+left  join rental r 
+on c.customer_id = r.customer_id 
+where r.rental_id is null;
+
+-- Q37
+select 
+count(*) as num_copies
+from film f 
+inner join inventory i 
+on f.film_id =i.film_id
+where f.title = 'Hunchback Impossible';
+
+-- q38
+select
+c.customer_id ,
+c.first_name ,
+c.last_name ,
+sum(p.amount) as total_amount
+from customer c 
+inner join payment p 
+on c.customer_id =p.customer_id 
+group by c.customer_id ,
+c.first_name ,
+c.last_name 
+order by c.last_name;
+
+
+
+
+
+
+ 
+
 
 
  
