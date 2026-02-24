@@ -419,6 +419,73 @@ where f.title='Alone Trip'
 );
 
 
+-- q47
+
+select 
+f.film_id,
+f.title,
+f.`length` ,
+case 
+	when f.`length`  < 60 then 'Short'
+	when f.`length`  between 60 and 120 then 'Medium'
+	else 'Long' 
+end as category
+from film f ;
+
+-- q48
+
+select
+p.payment_id ,
+p.amount,
+case 
+	when p.amount > 5 then 'High'
+	else 'Low'
+end as payment_flag
+from payment p 
+
+-- q49
+
+select 
+c3.country ,
+count(c.customer_id ) as no_of_customers
+from customer c 
+inner  join address a 
+on c.address_id =a.address_id 
+inner join city c2 
+on a.city_id =c2.city_id 
+inner join country c3 
+on c2.country_id =c3.country_id 
+group by c3.country 
+having count(c.customer_id )>20;
+
+-- q50
+with payment_per_customer as (
+select 
+c.store_id,
+c.customer_id ,
+c.first_name ,
+c.last_name,
+count(p.payment_id ) as num_payment
+from  customer c
+inner join payment p 
+on  p.customer_id = c.customer_id
+group by c.store_id,c.customer_id ,c.first_name , c.last_name 
+)
+select 
+ppc.store_id ,
+ppc.customer_id ,
+ppc.first_name ,
+ppc.last_name ,
+ppc.num_payment 
+from payment_per_customer ppc
+where ppc.num_payment = ( 
+select max(num_payment) 
+from payment_per_customer 
+where store_id =ppc.store_id
+)
+
+
+
 
 
 
