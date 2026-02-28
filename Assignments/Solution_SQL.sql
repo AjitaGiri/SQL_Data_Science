@@ -460,28 +460,28 @@ having count(c.customer_id )>20;
 
 -- q50
 with payment_per_customer as (
-select 
-c.store_id,
-c.customer_id ,
-c.first_name ,
-c.last_name,
-count(p.payment_id ) as num_payment
+	select 
+	c.store_id,
+	c.customer_id ,
+	c.first_name ,
+	c.last_name,
+	count(p.payment_id ) as num_payment
 from  customer c
 inner join payment p 
 on  p.customer_id = c.customer_id
 group by c.store_id,c.customer_id ,c.first_name , c.last_name 
 )
 select 
-ppc.store_id ,
-ppc.customer_id ,
-ppc.first_name ,
-ppc.last_name ,
-ppc.num_payment 
+	ppc.store_id ,
+	ppc.customer_id ,
+	ppc.first_name ,
+	ppc.last_name ,
+	ppc.num_payment 
 from payment_per_customer ppc
 where ppc.num_payment = ( 
-select max(num_payment) 
-from payment_per_customer 
-where store_id =ppc.store_id
+	select max(num_payment) 
+	from payment_per_customer 
+	where store_id =ppc.store_id
 )
 
 
