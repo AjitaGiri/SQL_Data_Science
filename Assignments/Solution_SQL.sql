@@ -587,3 +587,36 @@ on c.customer_id = r.customer_id
 left join payment p 
 on r.rental_id = p.rental_id
 group by c.customer_id, c.first_name,c.last_name;
+
+-- q57
+
+with ranked_movies as(
+select 
+f.title,
+f.`length`,
+dense_rank() over (order by f.`length`  desc) as rnk
+from film f 
+)
+select
+title,
+length
+from ranked_movies 
+where rnk=2;
+
+-- q58
+
+-- set @n=3 
+set @n=5
+
+with ranked_movies as(
+select
+f.title ,
+f.`length` ,
+dense_rank() over (order by f.`length`  desc) as rnk
+from film f 
+)
+select
+title,
+length 
+from ranked_movies 
+where rnk=@n;
