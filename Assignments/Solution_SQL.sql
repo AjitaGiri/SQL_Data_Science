@@ -484,21 +484,106 @@ where ppc.num_payment = (
 	where store_id =ppc.store_id
 )
 
+-- q51
 
+select 
+c.customer_id,
+c.first_name,
+c.last_name, 
+sum(p.amount) as total_paid,
+rank() over (order by sum(p.amount) desc) as rank_paid
+from customer c
+left join payment p 
+on c.customer_id =p.customer_id 
+group by c.customer_id, c.first_name, c.last_name
+order by rank_paid ;
 
+-- q52
 
+select *
+from 
+( 
+select 
+fc.category_id,
+f.film_id,
+f.title,
+count(r.rental_id) as rentals,
+rank() over (partition by fc.category_id order by count(r.rental_id) desc) as rank_in_category
+from film f
+inner join film_category fc 
+on f.film_id = fc.film_id
+left join inventory i 
+on f.film_id = i.film_id
+left join rental r 
+on i.inventory_id = r.inventory_id
+group by fc.category_id, f.film_id, f.title
+) as ranked_films
+where ranked_films.rank_in_category <=3
+order by category_id ,rank_in_category ;
 
+-- q53
 
+select 
+r.rental_id,
+r.customer_id,
+r.rental_date,
+p.amount,
+sum(p.amount) over (
+partition by r.customer_id 
+order by r.rental_date
+rows between unbounded preceding and current row) as running_total
+from rental r
+left join payment p 
+on r.rental_id = p.rental_id 
+order by r.customer_id ,r.rental_date;
 
+-- q54
+select
+r.customer_id ,
+min(r.rental_date) as first_rental,
+max(r.rental_date ) as last_rental
+from rental r 
+group by r.customer_id 
+order by r.customer_id ;
 
+-- q55
 
+with top_films as (
+select 
+f.film_id ,
+f.title ,
+count(r.rental_id ) as total_rental
+from film f 
+left join inventory i 
+on f.film_id =i.film_id 
+left join rental r 
+on i.inventory_id =r.inventory_id 
+group by f.film_id, f.title
+order by total_rental desc
+limit 5
+)
+select 
+tf.film_id,
+tf.title,
+a.actor_id,
+a.first_name,
+a.last_name
+from top_films tf
+inner join film_actor fa on 
+tf.film_id= fa.film_id
+inner join actor a
+on fa.actor_id = a.actor_id
+order by tf.total_rental desc, tf.film_id
 
- 
-
-
-
- 
-
-
-
-
+-- q56
+create view customer_rental_summary as
+select
+c.first_name || ' ' || c.last_name as customer_name,
+count(r.rental_id) as total_rentals, 
+sum(p.amount) as total_paid
+from customer c 
+left join rental r 
+on c.customer_id = r.customer_id
+left join payment p 
+on r.rental_id = p.rental_id
+group by c.customer_id, c.first_name,c.last_name;
