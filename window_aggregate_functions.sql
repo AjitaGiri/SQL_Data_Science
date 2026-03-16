@@ -140,3 +140,48 @@ max(sales) over(partition by product) HighestSalesByProduct,
 min(sales) over(partition by product) LowestSalesByProduct
 from sales.orders;
 
+/* Analysis Over Time
+
+1. Running total 
+
+Aggregate all values from the beginning up to the current 
+point without dropping off older data
+
+SUM(Sales) OVER( ORDER BY Month)
+
+ROWS BETWEEN UNBOUNDED PRECEDING AND CURRENT ROW :DEFAULT FRAME
+
+2. Rolling total
+
+Aggregate all values within a fixed time window.
+As new data is added, the oldest data point will be dropped.
+
+SUM(Sales) OVER( ORDER BY MONTH ROWS BETWEEN 2 PRECEDING AND CURRENT ROW)
+
+*/
+
+-- Calculate moving average of sales for product over time
+
+select
+    orderid,
+    productid,
+    orderdate,
+    sales,
+    avg(sales) over (partition  by productid) AvgByProduct,
+    avg(sales) over (partition by productid order by orderdate rows between unbounded preceding and current row) MovingAvg
+from sales.orders;
+
+-- calculate moving average of sales for each product over time including only the next order
+
+select
+orderid,
+orderdate,
+productid,
+avg(sales) over (partition by productid order by orderdate rows between current row and 1 following) rollingavg
+from sales.orders;
+
+
+--overall total (analysis)
+--total per groups (analysis)
+--running total
+--rolling total
