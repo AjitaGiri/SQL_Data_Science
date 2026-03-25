@@ -40,3 +40,14 @@ Each of the following case study questions can be answered using a single SQL st
    - In the first week after a customer joins the program (including their join date) they earn 2x points on all items, not just sushi - how many points do customer A and B have at the end of January?
 
 */
+
+--1
+select
+s.customer_id,
+sum(m.price) as totalprice
+from menu m
+join sales s
+on m.product_id=s.product_id
+group by s.customer_id;
+
+--2
