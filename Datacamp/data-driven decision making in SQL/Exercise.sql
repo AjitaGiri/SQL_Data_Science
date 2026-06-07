@@ -24,3 +24,18 @@ SELECT *
 FROM renting
 WHERE date_renting BETWEEN '2018-04-01' AND '2018-08-31'
 ORDER BY date_renting DESC; -- Order by recency in decreasing order
+
+--Selecting movies
+-- The table movies contains all movies available on the online platform.
+-- 1.Select all movies which are not dramas.
+SELECT *
+FROM movies
+where genre <> 'Drama'; -- All genres except drama
+-- 2.Select the movies 'Showtime', 'Love Actually' and 'The Fighter'.
+SELECT *
+FROM movies
+where title in ('Showtime', 'Love Actually' , 'The Fighter'); -- Select all movies with the given titles
+-- 3.Order the movies by increasing renting price.
+SELECT *
+FROM movies
+order by renting_price desc ; -- Order the movies by increasing renting price
