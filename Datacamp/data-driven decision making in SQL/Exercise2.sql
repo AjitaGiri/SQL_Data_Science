@@ -82,3 +82,91 @@ LEFT JOIN movies AS m
 ON m.movie_id = ai.movie_id
 LEFT JOIN actors AS a
 ON a.actor_id = ai.actor_id;
+
+SELECT rm.title, -- Report the income from movie rentals for each movie 
+       sum(rm.renting_price) AS income_movie
+FROM
+       (SELECT m.title,  
+               m.renting_price
+       FROM renting AS r
+       LEFT JOIN movies AS m
+       ON r.movie_id=m.movie_id) AS rm
+group by rm.title
+ORDER BY income_movie desc; -- Order the result by decreasing income
+
+SELECT a.gender, -- Report for male and female actors from the USA 
+       min(a.year_of_birth), -- The year of birth of the oldest actor
+       max(a.year_of_birth) -- The year of birth of the youngest actor
+FROM
+   (select * -- Use a subsequen SELECT to get all information about actors from the USA
+   from actors 
+   where nationality='USA') AS a -- Give the table the name a
+GROUP BY a.gender;
+
+SELECT m.title, 
+COUNT(*),
+AVG(r.rating)
+FROM renting AS r
+LEFT JOIN customers AS c
+ON c.customer_id = r.customer_id
+LEFT JOIN movies AS m
+ON m.movie_id = r.movie_id
+WHERE c.date_of_birth BETWEEN '1970-01-01' AND '1979-12-31'
+GROUP BY m.title
+having count(*) >1 -- Remove movies with only one rental
+order by avg(r.rating) desc; -- Order with highest rating first
+
+--Identify favorite actors for Spain
+--You're now going to explore actor popularity in Spain. Use as alias the first letter of the table, except for the table actsin use ai instead.
+SELECT a.name,  c.gender,
+       COUNT(*) AS number_views, 
+       AVG(r.rating) AS avg_rating
+FROM renting as r
+LEFT JOIN customers AS c
+ON r.customer_id = c.customer_id
+LEFT JOIN actsin as ai
+ON r.movie_id = ai.movie_id
+LEFT JOIN actors as a
+ON ai.actor_id = a.actor_id
+
+GROUP BY a.name, c.gender -- For each actor, separately for male and female customers
+HAVING AVG(r.rating) IS NOT NULL AND count(*)>5 -- Report only actors with more than 5 movie rentals
+ORDER BY avg_rating DESC, number_views DESC;
+
+--  report the favorite actors only for customers from Spain.
+SELECT a.name,  c.gender,
+       COUNT(*) AS number_views, 
+       AVG(r.rating) AS avg_rating
+FROM renting as r
+LEFT JOIN customers AS c
+ON r.customer_id = c.customer_id
+LEFT JOIN actsin as ai
+ON r.movie_id = ai.movie_id
+LEFT JOIN actors as a
+ON ai.actor_id = a.actor_id
+where c.country='Spain' -- Select only customers from Spain
+GROUP BY a.name, c.gender
+HAVING AVG(r.rating) IS NOT NULL 
+  AND COUNT(*) > 5 
+ORDER BY avg_rating DESC, number_views DESC;
+
+-- KPIs per country
+-- In chapter 1 you were asked to provide a report about the development of the company. This time you have to prepare a similar report with KPIs for each country separately. Your manager is interested in the total number of movie rentals, the average rating of all movies and the total revenue for each country since the beginning of 2019.
+
+-- Calculate the number of movie rentals.
+--Calculate the average rating.
+--Calculate the revenue from movie rentals.
+--Report these KPIs for each country.
+SELECT 
+	c.country ,                  -- For each country report
+	count(*) AS number_renting, -- The number of movie rentals
+	avg(r.rating) AS average_rating, -- The average rating
+	sum(m.renting_price) AS revenue         -- The revenue from movie rentals
+FROM renting AS r
+LEFT JOIN customers AS c
+ON c.customer_id = r.customer_id
+LEFT JOIN movies AS m
+ON m.movie_id = r.movie_id
+WHERE date_renting >= '2019-01-01'
+group by c.country;
+
