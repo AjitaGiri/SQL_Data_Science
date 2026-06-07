@@ -39,3 +39,13 @@ where title in ('Showtime', 'Love Actually' , 'The Fighter'); -- Select all movi
 SELECT *
 FROM movies
 order by renting_price desc ; -- Order the movies by increasing renting price
+
+-- Select from renting
+-- Only some users give a rating after watching a movie. Sometimes it is interesting to explore only those movie rentals where a rating was provided.
+
+-- Select from table renting all movie rentals from 2018.
+--Filter only those records which have a movie rating.
+SELECT *
+FROM renting
+WHERE date_renting between '2018-01-01' and '2018-12-31' -- Renting in 2018
+AND rating is not null; -- Rating exists
