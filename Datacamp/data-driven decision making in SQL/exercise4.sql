@@ -46,6 +46,7 @@ GROUP BY GROUPING SETS ((nationality), (gender), ()); -- Use the correct GROUPIN
 --Exploring rating by country and gender
 --Now you will investigate the average rating of customers aggregated by country and gender.
 
+
 --Select the columns country, gender, and rating and use the correct join to combine the table renting with customer.
 --Use GROUP BY to calculate the average rating over country and gender. Order the table by country and gender.
 --Now, use GROUPING SETS to get the same result, i.e. the average rating over country and gender.
