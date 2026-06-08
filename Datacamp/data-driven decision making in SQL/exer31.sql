@@ -21,7 +21,7 @@ WHERE 5 >
 -- Movies and ratings with correlated queries
 Report a list of movies that received the most attention on the movie platform, (i.e. report all movies with more than 5 ratings and all movies with an average rating higher than 8).
 
-	SELECT *
+SELECT *
 FROM movies AS m
 WHERE 8 < (
     SELECT AVG(r.rating)
